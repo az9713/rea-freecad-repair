@@ -1,0 +1,136 @@
+"""Native offscreen Qt/FreeCAD command smoke. No mocked widgets or host APIs."""
+import json
+import hashlib
+import os
+from pathlib import Path
+import sys
+import traceback
+ROOT = Path(os.environ['TOPOINTENT_ROOT']).resolve()
+sys.path.insert(0, str(ROOT))
+import FreeCAD as App
+import FreeCADGui as Gui
+import Part
+from PySide import QtCore, QtWidgets, QtGui
+
+# Offscreen Qt cannot rely on the real user's font registry/profile. Load fonts
+# only from the downloaded portable runtime, keeping the isolation boundary.
+for font_name in ('DejaVuSans.ttf', 'DejaVuSansMono.ttf'):
+    font_path = next((ROOT / '.runtime/freecad').rglob(font_name))
+    QtGui.QFontDatabase.addApplicationFont(str(font_path))
+QtWidgets.QApplication.setFont(QtGui.QFont('DejaVu Sans', 10))
+
+checks = []
+errors = []
+
+
+def accept_capture():
+    modal = QtWidgets.QApplication.activeModalWidget()
+    if modal:
+        modal.accept()
+    else:
+        errors.append('Capture modal did not appear')
+
+
+def accept_analyze():
+    modal = QtWidgets.QApplication.activeModalWidget()
+    if not modal:
+        errors.append('Analysis modal did not appear')
+        return
+    modal.grab().save(str(ROOT / 'docs/native-analyzer.png'))
+    for button in modal.findChildren(QtWidgets.QPushButton):
+        if button.text() == 'Accept reference repair':
+            if not button.isEnabled():
+                errors.append('Unique candidate accept was disabled')
+                modal.reject()
+            else:
+                button.click()
+            return
+    errors.append('Analysis accept button missing')
+    modal.accept()
+
+
+def refuse_ambiguous():
+    modal = QtWidgets.QApplication.activeModalWidget()
+    if not modal:
+        errors.append('Ambiguity modal did not appear')
+        return
+    modal.grab().save(str(ROOT / 'docs/native-ambiguity.png'))
+    for button in modal.findChildren(QtWidgets.QPushButton):
+        if button.text() == 'Accept reference repair' and button.isEnabled():
+            errors.append('Ambiguous candidate accept must be disabled')
+    modal.reject()
+
+
+try:
+    installed = Path(App.getUserAppDataDir()) / 'Mod' / 'TopoIntent'
+    discovered = 'TopoIntentWorkbench' in Gui.listWorkbenches()
+    if installed.is_dir():
+        assert discovered, 'Installed ZIP workbench was not automatically discovered'
+        for name in ['InitGui.py', 'topointent/gui.py', 'topointent/core.py', 'topointent/freecad_adapter.py']:
+            assert hashlib.sha256((installed / name).read_bytes()).digest() == hashlib.sha256((ROOT / name).read_bytes()).digest(), 'Installed ZIP differs from tested source: ' + name
+        sys.path.insert(0, str(installed))
+        checks.append('release_zip_automatically_discovered_in_isolated_user_Mod')
+    elif not discovered:
+        exec(compile((ROOT / 'InitGui.py').read_text(), str(ROOT / 'InitGui.py'), 'exec'))
+    Gui.activateWorkbench('TopoIntentWorkbench')
+    assert Gui.activeWorkbench().name() == 'TopoIntentWorkbench'
+    checks.append('native_workbench_registered_and_activated')
+    for command in ('TopoIntent_Capture', 'TopoIntent_Analyze', 'TopoIntent_Probe'):
+        assert command in Gui.listCommands()
+    checks.append('all_three_native_commands_registered')
+    from topointent import freecad_adapter as adapter
+    if installed.is_dir():
+        assert Path(adapter.__file__).resolve().is_relative_to(installed.resolve())
+        checks.append('native_GUI_imported_adapter_from_installed_release_zip')
+    doc = App.newDocument('GuiSmoke')
+    doc.UndoMode = 1
+    box = doc.addObject('Part::Box', 'DemonstrationBox')
+    box.Length = box.Width = box.Height = 10
+    doc.recompute()
+    ref = next(f.ref for f in adapter.snapshot(box.Shape).faces if f.normal[2] > .999)
+    Gui.Selection.clearSelection()
+    Gui.Selection.addSelection(box, ref)
+    QtCore.QTimer.singleShot(250, accept_capture)
+    Gui.runCommand('TopoIntent_Capture')
+    feature = doc.getObject('TopoIntentReference')
+    assert feature and not feature.Shape.isNull(), 'Capture GUI failed to produce a reference'
+    checks.append('capture_dialog_created_real_document_feature')
+    box.Height = 12
+    doc.recompute()
+    Gui.Selection.clearSelection()
+    Gui.Selection.addSelection(feature)
+    QtCore.QTimer.singleShot(250, accept_analyze)
+    Gui.runCommand('TopoIntent_Analyze')
+    assert not errors, errors
+    assert feature.Shape.isValid() and not feature.Shape.isNull()
+    checks.append('analysis_dialog_accepted_validated_native_transaction')
+    Gui.Selection.clearSelection()
+    QtWidgets.QApplication.processEvents()
+    source = doc.addObject('Part::Feature', 'SplitSolid')
+    source.Shape = Part.makeBox(10, 10, 10)
+    doc.recompute()
+    ref = next(f.ref for f in adapter.snapshot(source.Shape).faces if f.normal[2] > .999)
+    ambiguous = adapter.create_capture(source, ref)
+    source.Shape = Part.makeBox(5, 10, 10).fuse(Part.makeBox(5, 10, 10, App.Vector(5, 0, 0)))
+    doc.recompute()
+    assert adapter.analyze(ambiguous)['status'] == 'ambiguous'
+    Gui.Selection.clearSelection()
+    Gui.Selection.addSelection(ambiguous)
+    QtWidgets.QApplication.processEvents()
+    QtCore.QTimer.singleShot(250, refuse_ambiguous)
+    Gui.runCommand('TopoIntent_Analyze')
+    assert not errors, errors
+    checks.append('ambiguous_real_geometry_disables_accept_in_native_dialog')
+except Exception:
+    errors.append(traceback.format_exc())
+finally:
+    Gui.Selection.clearSelection()
+    QtWidgets.QApplication.processEvents()
+    report = {'native_gui': True, 'offscreen': True, 'passed': len(checks),
+              'checks': checks, 'errors': errors}
+    report['tested_files'] = {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest()
+                              for name in ['InitGui.py', 'topointent/gui.py', 'tests/gui_smoke.FCMacro']}
+    (ROOT / 'artifacts/gui-results.json').write_text(json.dumps(report, indent=2) + '\n')
+    for name in list(App.listDocuments()):
+        App.closeDocument(name)
+    QtCore.QTimer.singleShot(100, Gui.getMainWindow().close)

@@ -1,0 +1,88 @@
+{
+  "runtime": "FreeCAD + OpenCASCADE, not mocked",
+  "freecad_version": [
+    "1",
+    "1",
+    "4",
+    "20260928 (Git shallow)",
+    "Unknown",
+    "2026/09/28 13:46:34",
+    "(HEAD detached at 4fd3bf320)",
+    "4fd3bf320d9566a27e60069fc8387448aaa3a094"
+  ],
+  "passed": 7,
+  "total": 7,
+  "results": [
+    {
+      "name": "project_isolated_native_runtime_paths",
+      "passed": true,
+      "details": {
+        "user_data": ".runtime/home/FreeCAD",
+        "runtime_resources": ".runtime/freecad/FreeCAD_1.1.4-Windows-x86_64-py311/data"
+      }
+    },
+    {
+      "name": "real_box_height_and_isolated_counterfactual",
+      "passed": true,
+      "details": {
+        "current_volume_ratio": 1.2,
+        "counterfactual_volume_ratio": 1.0,
+        "source_preserved": true
+      }
+    },
+    {
+      "name": "real_brep_renumber_repair_and_native_undo",
+      "passed": true,
+      "details": {
+        "before": "Face6",
+        "after": "Face5",
+        "undo_restored_binding": true,
+        "kernel_valid": true
+      }
+    },
+    {
+      "name": "real_boolean_split_ambiguity_refused",
+      "passed": true,
+      "details": {
+        "candidates": [
+          "Face3",
+          "Face7"
+        ],
+        "repair_refused": true,
+        "kernel_valid": true,
+        "solids": 1
+      }
+    },
+    {
+      "name": "real_stale_preview_refused",
+      "passed": true,
+      "details": {
+        "stale_refused_without_rebinding": true
+      }
+    },
+    {
+      "name": "failed_consumer_recompute_rolls_back_binding",
+      "passed": true,
+      "details": {
+        "failed_recompute_rolled_back": true,
+        "original_binding": [
+          "Face6"
+        ]
+      }
+    },
+    {
+      "name": "FCStd_save_open_proxy_roundtrip",
+      "passed": true,
+      "details": {
+        "restored_proxy": "ReferenceProxy",
+        "status": "unique"
+      }
+    }
+  ],
+  "tested_files": {
+    "topointent/core.py": "719965ebac6b5662bba1a4cdbd36c1715d54d07eb8ea200c287f1a495b755433",
+    "topointent/freecad_adapter.py": "e0bc4d082c31cd2bbf3184a7a79bcdaa70a5317e0cccf91eb3cd7da3a1bc30d2",
+    "tests/integration_freecad.py": "a01971160e4e24ed75e89ea9318bf52f2463f3098fcef8c778eec033bbae1c3d",
+    "tests/integration_helpers.py": "b0ff6c7c14df2d89612d6c9caf62efed1ac0950447f66b498bfff5746d88d570"
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "native_gui": true,
+  "offscreen": true,
+  "passed": 7,
+  "checks": [
+    "release_zip_automatically_discovered_in_isolated_user_Mod",
+    "native_workbench_registered_and_activated",
+    "all_three_native_commands_registered",
+    "native_GUI_imported_adapter_from_installed_release_zip",
+    "capture_dialog_created_real_document_feature",
+    "analysis_dialog_accepted_validated_native_transaction",
+    "ambiguous_real_geometry_disables_accept_in_native_dialog"
+  ],
+  "errors": [],
+  "tested_files": {
+    "InitGui.py": "b99d90f7e616d7bab9b3e7ffb39d8fbc76b848a323fc06ab720483c9e1844c2a",
+    "topointent/gui.py": "57b3001c17d145bc592bcf064bc01614e4c733cc3aa5e0aaa174e7a0145fe175",
+    "tests/gui_smoke.FCMacro": "e480cc42ace506ac5f0525d040e353a8e8de3a53e825cb022ef3a0d2915deea3"
+  }
+}

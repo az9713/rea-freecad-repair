@@ -1,0 +1,12 @@
+.runtime/
+investigation/audit-baseline.private.json
+__pycache__/
+*.py[cod]
+build/
+artifacts/*.FCStd*
+artifacts/*.log
+artifacts/*candidate*
+artifacts/*.zip
+artifacts/*.sha256
+handoff.json
+.coverage

@@ -1,0 +1,25 @@
+{
+  "upstream": "https://github.com/FreeCAD/FreeCAD",
+  "version": "1.1.4",
+  "commit": "4fd3bf320d9566a27e60069fc8387448aaa3a094",
+  "files": [
+    {
+      "path": "investigation\\public-source\\CommandDoc.cpp",
+      "upstream_path": "src/Gui/CommandDoc.cpp",
+      "url": "https://raw.githubusercontent.com/FreeCAD/FreeCAD/4fd3bf320d9566a27e60069fc8387448aaa3a094/src/Gui/CommandDoc.cpp",
+      "sha256": "6a187905acb432e847f62c086b467c2bec85488abbe3060a18d1531b6a665255"
+    },
+    {
+      "path": "investigation\\public-source\\LICENSE",
+      "upstream_path": "LICENSE",
+      "url": "https://raw.githubusercontent.com/FreeCAD/FreeCAD/4fd3bf320d9566a27e60069fc8387448aaa3a094/LICENSE",
+      "sha256": "7ffe1954587c77dfba1cf8eb9b2ea743671fa6e63f9e7a2f258119d42e14eefe"
+    },
+    {
+      "path": "investigation/public-source/TopoShapePyImp.cpp",
+      "upstream_path": "src/Mod/Part/App/TopoShapePyImp.cpp",
+      "url": "https://raw.githubusercontent.com/FreeCAD/FreeCAD/4fd3bf320d9566a27e60069fc8387448aaa3a094/src/Mod/Part/App/TopoShapePyImp.cpp",
+      "sha256": "071c16bf50c931e8f3a6abf14f779c016cd5537a89d59f9dcf78254609cfa497"
+    }
+  ]
+}

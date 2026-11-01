@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package format="1">
+  <name>TopoIntent</name>
+  <description>Conservative boundary-face intent explanation, isolated box counterfactuals and validated reference repair</description>
+  <version>0.1.0</version>
+  <date>2026-11-01</date>
+  <maintainer>TopoIntent contributors</maintainer>
+  <license file="LICENSE">MIT</license>
+  <content><workbench><name>TopoIntent</name><classname>TopoIntentWorkbench</classname><subdirectory>.</subdirectory></workbench></content>
+</package>
