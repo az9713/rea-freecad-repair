@@ -1,16 +1,16 @@
 # TopoIntent — a face reference that can explain its intent
 
-An **in-app FreeCAD workbench** for investigating a narrow but consequential
-failure: `Face6` still exists after an upstream change, but it is no longer the
-outer plane the designer meant to reference.
+A sketch or another feature may depend on a particular surface of a CAD model. TopoIntent saves a simple description of that surface, checks it after a model change, and offers a replacement only when one surface clearly matches.
 
-TopoIntent captures an explicit geometric contract, explains every candidate,
-and rebinds only when **one** face passes all checks. For a `Part::Box`, an isolated
-counterfactual can test a dimension change without editing the original source.
+Suppose you attach a feature to the top of a box and later change the box. The label 'Face6' is a face number, not a description of 'the top surface'. You want a way to check that the link still means what you intended, even if the model successfully rebuilds.
 
-[Interactive explanation](https://az9713.github.io/rea-freecad-repair/) ·
-[Installable ZIP](https://github.com/az9713/rea-freecad-repair/releases/tag/v0.1.0) ·
-[Investigation and comparison](investigation/COMPARISON.md)
+**Example:** Describe the target as the outside, horizontal surface at the top of the solid. After increasing the box's height, the analyzer explains which faces fail those checks and which one passes. If the top has been split into two equally plausible faces, it asks for a clearer choice instead of repairing the link automatically.
+
+**What you install:** A FreeCAD workbench for reviewing links to model surfaces.
+
+**Current scope:** This is an additional review tool for a narrow class of flat, axis-aligned outer faces, not a replacement for FreeCAD's own reference handling. Geometry calculations and native controls were tested; 3D viewport rendering was not verified.
+
+[Live guide](https://az9713.github.io/rea-freecad-repair/) · [Download packages](https://github.com/az9713/rea-freecad-repair/releases/tag/v0.1.0)
 
 ## What changes inside FreeCAD
 
