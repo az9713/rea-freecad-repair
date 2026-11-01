@@ -9,7 +9,7 @@ and rebinds only when **one** face passes all checks. For a `Part::Box`, an isol
 counterfactual can test a dimension change without editing the original source.
 
 [Interactive explanation](https://az9713.github.io/rea-freecad-repair/) ·
-[Installable ZIP](https://github.com/az9713/rea-freecad-repair/releases/latest) ·
+[Installable ZIP](https://github.com/az9713/rea-freecad-repair/releases/tag/v0.1.0) ·
 [Investigation and comparison](investigation/COMPARISON.md)
 
 ## What changes inside FreeCAD
