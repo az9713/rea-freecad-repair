@@ -12,6 +12,18 @@ Suppose you attach a feature to the top of a box and later change the box. The l
 
 [Live guide](https://az9713.github.io/rea-freecad-repair/) · [Download packages](https://github.com/az9713/rea-freecad-repair/releases/tag/v0.1.0)
 
+<!-- rea-release-expectations:start -->
+## What to expect from this release
+
+**Status: experimental.** Read the tested scope and remaining work below before choosing this release for your workflow.
+
+- **What you get:** An additional workbench installed inside FreeCAD. Its face checks and repair controls use FreeCAD's existing modeling and undo facilities.
+- **Verified so far:** The geometry checks, unique-match repair, refusal of ambiguous matches, native controls and undo were exercised with synthetic models in FreeCAD.
+- **Still needs testing or implementation:** The complete 3D viewport workflow and broader real-model compatibility still need testing.
+- **Relationship to the original app:** The release handles a narrow class of flat, axis-aligned outer faces and supported links. It complements FreeCAD's existing reference handling; it is not a general repair for every broken model.
+
+<!-- rea-release-expectations:end -->
+
 ## What changes inside FreeCAD
 
 | Before | With TopoIntent |
